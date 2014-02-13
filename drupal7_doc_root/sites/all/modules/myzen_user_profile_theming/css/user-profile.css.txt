@@ -1,0 +1,3 @@
+.content a {
+    background-image: url('../images/circle_bg.jpg');
+}

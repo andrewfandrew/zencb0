@@ -1,0 +1,4 @@
+name = "My Example"
+description = "And example module that goes over theme function basics"
+core = "7.x"
+version = "7.x-3.0"

@@ -1,0 +1,228 @@
+<?php
+// $Id: user-profile.tpl.php,v 1.2.2.2 2009/10/06 11:50:06 goba Exp $
+
+/**
+ * @file user-profile.tpl.php
+ * Default theme implementation to present all user profile data.
+ *
+ * This template is used when viewing a registered member's profile page,
+ * e.g., example.com/user/123. 123 being the users ID.
+ *
+ * By default, all user profile data is printed out with the $user_profile
+ * variable. If there is a need to break it up you can use $profile instead.
+ * It is keyed to the name of each category or other data attached to the
+ * account. If it is a category it will contain all the profile items. By
+ * default $profile['summary'] is provided which contains data on the user's
+ * history. Other data can be included by modules. $profile['user_picture'] is
+ * available by default showing the account picture.
+ *
+ * Also keep in mind that profile items and their categories can be defined by
+ * site administrators. They are also available within $profile. For example,
+ * if a site is configured with a category of "contact" with
+ * fields for of addresses, phone numbers and other related info, then doing a
+ * straight print of $profile['contact'] will output everything in the
+ * category. This is useful for altering source order and adding custom
+ * markup for the group.
+ *
+ * To check for all available data within $profile, use the code below.
+ * @code
+ *   print '<pre>'. check_plain(print_r($profile, 1)) .'</pre>';
+ * @endcode
+ *
+ * Available variables:
+ *   - $user_profile: All user profile data. Ready for print.
+ *   - $profile: Keyed array of profile categories and their items or other data
+ *     provided by modules.
+ *
+ * @see user-profile-category.tpl.php
+ *   Where the html is handled for the group.
+ * @see user-profile-item.tpl.php
+ *   Where the html is handled for each item in the group.
+ * @see template_preprocess_user_profile()
+ *
+ * This template was created by Andrew Farquharson along with the containing module. My design does not incorporate blocks. 
+ * The dynamic content is therefore to be output using php snippets into HTML div's.
+ * Most of the code within this template is HTML. The layout of the template is therefore controlled by HTML and not by pulling
+ * in external blocks, for example blocks created by other custom modules. 
+ * However, other developers may wish to encapsulate portions of the HTML i am defining here into blocks, at a later stage.
+ * That would simplify and reduce the amount of code within this template. I have however decided that the amount of the code does not
+ * justify creation of custom blocks at this stage.
+ */
+ 
+ 
+// the following php snippets are required because the profile2 module is being used on this site to control user profiles
+ print_r($profile_data); 
+
+if (arg(0) == 'user' && is_numeric(arg(1))) {
+  $profile = user_load(arg(1));
+}
+else {
+  $profile = $user;
+}
+$profile_data = profile2_load_by_user($user->uid);
+$profile_node = $profile_data['profile'];
+
+// print '<pre>'. check_plain(print_r($profile, 1)) .'</pre>';
+?>
+
+<!-- Now the HTML code begins.-->
+<!-- Because this site is built on a fixed page width of 960px, the layout defined will use 960px width. Sidebars are disabled for the user login
+interface so the template layout defined here will expand to use the full page width.-->
+
+<!-- The client requires an interface with upper and lower areas. The upper area is subdivided into three areas, a left, middle and right which 
+together fill out the whole of the upper area. The lower area is subdivided into two areas which together fill out the whole of the lower area.-->
+<!-- Note that background colours are defined for the div's so that they can be clearly seen. The production version of the template will remove
+all these background colours since the client design requires a white background.-->
+
+<!--Create an overall containing div to contain the header and content i.e. upper and lower areas-->
+<div id="container-outer" style="width:960px;">
+
+
+<!--create a containing div, a header area to contain three columns which are three div's-->
+<div id="container-header" style="width:960px;height:172px;">
+<!--inside the "container-header" defined above, a containing div, put a div aligned to the left to the full height of the containing div-->
+<!-- and wide enough to contain the user's photo which has a max width of 248px-->
+<div id="personphoto" style="background-color:#FFD700;height:172px;width:248px;float:left;">
+<?php
+//output the user's picture to the page
+print render($user_profile['user_picture']);
+?>
+	</div>
+	
+	
+<!--create the second div, this one will sit in the middle of the header-->
+<div id="persondetails" style="background-color:#EEEEEE;height:172px;width:352px;float:left;">
+
+<!--The client specifications require certain profile fields to be output in this div using standard styling. The HTML will consist of standard
+tags that will be defined in the core of the site or in the csl theme. I am going to copy most of the segments of HTML that were used in the old
+Drupal 6 site. One or two of these fields are generated using extra logic which is catered for using php snippets. I am going to just
+copy these snippets along with the HTML segments. The only thing i am doing is re-arranging the order of the fields by rearranging the order of the HTML 
+and PHP snippets-->
+<!--I am copying the fields layout shown in a photoshop screenshot that i understand is the design required by the client-->
+
+<!-- According to that screenshot, the first field in this div is the full name of the user in text larger than any of the other fields on the page
+So it could be <h1> and the others <h2> or <h3>. This field is generated dynamically by a PHP snippet with no additional HTML text.-->
+
+
+			                <span class="name">
+<?php print check_plain($profile_node->field_profile_fname[0]['value']) . ' ' . check_plain($profile_node->field_profile_surname[0]['value']); ?>
+                </span><br />		
+				
+				
+				
+				<!-- One line below is the position of the user, for example 'middle manager', which will be ouput by a php snippet with no HTML text-->
+
+<!--Two lines below are six fields all with the same 'look'. Each contains a mix of HTML and a PHP snippet to provide the dynamic content.
+     These are in order, from top to bottom,
+	 Grade
+	 Organisation
+	 Location
+	 Manager
+	 Highest Qualifaction
+	 Qualification currently undertaken-->
+	 
+	  <dl>
+      <dt>Grade</dt>
+      <dd>
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_2[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+		
+		<dt>Organisation</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_23[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+        <dt>Location</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_9[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+		        <?php
+        // Get the manager relationship where I am the requestee (i.e. team member)
+        if ($relationships = user_relationships_load(array('rtid' => 1, 'requestee_id' => $profile->uid))) {
+          // Purposefully print all in case there is an inconsistency it will be spotted
+          foreach ($relationships as $relationship) {
+            $manager_user = user_load($relationship->requester_id);
+			}
+			}
+            ?>
+            <dt>Manager</dt>
+            <dd><?php print check_plain($manager_user->realname); ?></dd>
+
+
+         
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_19[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+      </dd>
+		
+		
+      <dt>Qualification currently undertaking</dt>
+      <dd>
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_20[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+      </dd>
+    </dl>
+		</div>
+	 
+	 
+<!--Create the third div to sit at the right hand side of the header containing div. It is sized to full height of the header.
+	This div contains a background image, a title h1 tagged, "Contact Info", then below it:
+	email address displayed as a link
+	telephone number-->
+<div id="contactinfo" style="background-color:khaki; height:172px;width:360px;float:left;">
+<h2>Contact Info</h2>
+
+	   <dt>Email</dt>
+        <dd class="softwrap"><?php print l($profile->mail, 'mailto:' . $profile->mail); ?></dd>
+
+        <dt>Telephone</dt>
+        <dd><?php print check_plain($profile_node->field_profile_telephone[LANGUAGE_NONE][0]['value']); ?></dd>
+
+</div>
+
+
+<div id="container-content" style="width:960px;">
+<div id="mainblocksarea" style="background-color:beige;height:;width:700px;float:left;">
+<h2>Resume e-learning</h2>
+
+<!-- The following lines starting 'View' are links-->
+View all
+<h2>My learning record</h2>
+View all
+<h3>Upcoming Workshop<h3>
+View completed workshops
+<h3>Incomplete Evaluations<h3>
+View completed evaluations
+<h3>Recent External Learning<h3>
+View all external learning records
+<h3>Recent Bookmarks<h3>
+View all bookmarks
+
+
+</div>
+
+<div id="minorblocksarea" style="background-color:#85C2FF;height:;width:260px;float:left;">
+<h2>Recent discussions</h2>
+<!-- The following output is dynamically generated by queries on the Moodle site. This utilises an existing custom module installed in this site-->
+</div>
+
+ </div>
+
+

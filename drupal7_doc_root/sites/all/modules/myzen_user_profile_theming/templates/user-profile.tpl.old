@@ -1,0 +1,353 @@
+<?php
+// $Id: user-profile.tpl.php,v 1.2.2.2 2009/10/06 11:50:06 goba Exp $
+
+/**
+ * @file user-profile.tpl.php
+ * Default theme implementation to present all user profile data.
+ *
+ * This template is used when viewing a registered member's profile page,
+ * e.g., example.com/user/123. 123 being the users ID.
+ *
+ * By default, all user profile data is printed out with the $user_profile
+ * variable. If there is a need to break it up you can use $profile instead.
+ * It is keyed to the name of each category or other data attached to the
+ * account. If it is a category it will contain all the profile items. By
+ * default $profile['summary'] is provided which contains data on the user's
+ * history. Other data can be included by modules. $profile['user_picture'] is
+ * available by default showing the account picture.
+ *
+ * Also keep in mind that profile items and their categories can be defined by
+ * site administrators. They are also available within $profile. For example,
+ * if a site is configured with a category of "contact" with
+ * fields for of addresses, phone numbers and other related info, then doing a
+ * straight print of $profile['contact'] will output everything in the
+ * category. This is useful for altering source order and adding custom
+ * markup for the group.
+ *
+ * To check for all available data within $profile, use the code below.
+ * @code
+ *   print '<pre>'. check_plain(print_r($profile, 1)) .'</pre>';
+ * @endcode
+ *
+ * Available variables:
+ *   - $user_profile: All user profile data. Ready for print.
+ *   - $profile: Keyed array of profile categories and their items or other data
+ *     provided by modules.
+ *
+ * @see user-profile-category.tpl.php
+ *   Where the html is handled for the group.
+ * @see user-profile-item.tpl.php
+ *   Where the html is handled for each item in the group.
+ * @see template_preprocess_user_profile()
+ */
+ print_r($profile_data); 
+
+if (arg(0) == 'user' && is_numeric(arg(1))) {
+  $profile = user_load(arg(1));
+}
+else {
+  $profile = $user;
+}
+$profile_data = profile2_load_by_user($user->uid);
+$profile_node = $profile_data['profile'];
+
+// print '<pre>'. check_plain(print_r($profile, 1)) .'</pre>';
+?>
+
+<div id="container-outer" style="width:960px;">
+
+
+
+<div id="container-header" style="width:960px;height:172px;">
+<div id="personphoto" style="background-color:#FFD700;height:172px;width:248px;float:left;">
+<?php
+//output the user's picture to the page
+print render($user_profile['user_picture']);
+?>
+	</div>
+	
+	
+<!--create the second column that is div, to go inside the containing div, this one will sit in the middle of the header to its full height-->
+<div id="persondetails" style="background-color:#EEEEEE;height:172px;width:352px;float:left;">
+Person details go here
+
+    <dl>
+      <dt>Grade</dt>
+      <dd>
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_2[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+		
+		<dt>Organisation</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_23[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+        <dt>Location</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_9[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+		        <?php
+        // Get the manager relationship where I am the requestee (i.e. team member)
+        if ($relationships = user_relationships_load(array('rtid' => 1, 'requestee_id' => $profile->uid))) {
+          // Purposefully print all incase there is an inconsistency it will be spotted
+          foreach ($relationships as $relationship) {
+            $manager_user = user_load($relationship->requester_id);
+            ?>
+            <dt>Manager</dt>
+            <dd><?php print check_plain($manager_user->realname); ?></dd>
+
+
+         
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_19[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+      </dd>
+		
+		
+      <dt>Qualification currently undertaking</dt>
+      <dd>
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_20[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+      </dd>
+    </dl>
+		</div>
+<!--Create the third column div to sit at the right hand side of the header containing div. It is sized to full height of the header, as with the first two-->
+<!-- This div contains a title perhaps h2 tagged, "Contact Info", then below it the email address as a link and the telephone number below it, for the user.-->
+<div id="contactinfo" style="background-color:#1199FF; height:172px;width:360px;float:left;">
+<h2>Contact Info</h2>
+</div>
+
+
+<div id="container-content" style="width:960px;">
+<div id="mainblocksarea" style="background-color:#3399FF;height:;width:700px;float:left;">
+
+<div class="block block-career-level">
+  <h3>Career Level</h3>
+  <div class="content">
+    <dl>
+      <dt>Grade</dt>
+      <dd>
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_2[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+	</div>
+</div>
+<div id="minorblocksarea" style="background-color:#85C2FF;height:;width:260px;float:left;">
+A block or two will go here</h1>
+
+<dl>
+        <dt>Email</dt>
+        <dd class="softwrap"><?php print l($profile->mail, 'mailto:' . $profile->mail); ?></dd>
+
+        <dt>Telephone</dt>
+        <dd><?php print check_plain($profile_node->field_profile_telephone[LANGUAGE_NONE][0]['value']); ?></dd>
+
+        <dt>Organisation</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_23[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+        <dt>Location</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_9[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+	</div>
+</div>
+
+  <div class="content">
+    <?php
+    /*
+    //Joe McP this blows up for some reason so commented out for now 
+      $qt_name = 'personal_development_plan_summar';
+      $quicktabs = quicktabs_build_quicktabs($qt_name);
+      print render($quicktabs); */
+    ?>
+  </div>
+
+
+<div class="block block-career-level">
+  <h3>Career Level</h3>
+
+      </dd>
+
+      <dt>Highest Qualification Level attained</dt>
+      <dd>
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_19[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+      </dd>
+
+      <dt>Qualification currently undertaking</dt>
+      <dd>
+        <?php
+        foreach ($profile_node->taxonomy_vocabulary_20[LANGUAGE_NONE] as $term) {
+          print check_plain($term['taxonomy_term']->name);
+        }
+        ?>
+      </dd>
+    </dl>
+  </div>
+  <div class="footer">
+    <p>
+      <?php print l('Edit career level', 'user/' . $profile->uid . '/edit/profile', array('query' => array('destination' => 'user/' . $profile->uid))); ?>
+    </p>
+  </div>
+</div>
+<div class="block block-evaluations">
+  <h3>Evaluations</h3>
+  <div class="content">
+    <?php
+    /* Joe McP this blows up as csl_moodle_get_user_courses() in csl_Moodle throws an error 
+     * 
+     * $block = module_invoke('csl_moodle', 'block_view', 'evaluations');
+      print render($block); */
+    ?>
+  </div>
+  <div class="footer">
+    <p><?php echo l('View all evaluations', 'user/evaluations') ?></p>
+  </div>
+</div>
+
+</div> <!-- /#content -->
+
+<div class="sidebar dContent" id="sidebar-right">
+  <?php
+// kineo mod to hide book mark block Mark lapsley
+
+  global $user;
+
+  if (in_array('admin user', array_values($user->roles))) {
+    ?>
+
+    <?php
+    $flag = flag_get_flag('bookmarks');
+
+    if ($flag !== false):
+
+      $bookmark_count = $flag->get_user_count($profile->uid);
+      ?>
+
+      <div class="block block-bookmarks">
+
+        <p>Bookmarked opportunities <span>(<?php print l($bookmark_count, 'user/' . $user->uid . '/bookmarks'); ?>)</span></p>
+
+      </div>
+
+
+    <?php endif; ?>
+
+    <?php
+  }
+
+// End of kineo mod 
+  ?>
+
+
+    <h2>Personal Details</h2>
+    <div class="content">
+      <p>
+        <span class="name">
+          <?php print check_plain($profile_node->field_profile_fname[LANGUAGE_NONE][0]['value']) . ' ' . check_plain($profile_node->field_profile_surname[LANGUAGE_NONE][0]['value']); ?>
+        </span><br />
+        <span class="posit">
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_24[LANGUAGE_NONE] as $term) {
+              print check_plain(ucfirst(strtolower($term['taxonomy_term']->name)));
+          }
+          ?>
+        </span>
+      </p>
+
+      <dl>
+        <dt>Email</dt>
+        <dd class="softwrap"><?php print l($profile->mail, 'mailto:' . $profile->mail); ?></dd>
+
+        <dt>Telephone</dt>
+        <dd><?php print check_plain($profile_node->field_profile_telephone[LANGUAGE_NONE][0]['value']); ?></dd>
+
+        <dt>Organisation</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_23[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+        <dt>Location</dt>
+        <dd>
+          <?php
+          foreach ($profile_node->taxonomy_vocabulary_9[LANGUAGE_NONE] as $term) {
+              print check_plain($term['taxonomy_term']->name);
+          }
+          ?>
+        </dd>
+
+        <?php
+        // Get the manager relationship where I am the requestee (i.e. team member)
+        if ($relationships = user_relationships_load(array('rtid' => 1, 'requestee_id' => $profile->uid))) {
+          // Purposefully print all incase there is an inconsistency it will be spotted
+          foreach ($relationships as $relationship) {
+            $manager_user = user_load($relationship->requester_id);
+            ?>
+            <dt>Manager name</dt>
+            <dd><?php print check_plain($manager_user->realname); ?></dd>
+
+            <dt>Manager email</dt>
+            <dd class="softwrap"><?php print l($manager_user->mail, 'mailto:' . $manager_user->mail); ?></dd>
+            <?php
+          }
+        }
+        else {
+          ?>
+          <dt>Manager</dt>
+          <dd>Not assigned. Please speak to your manager about joining their team.</dd>
+          <?php
+        }
+        ?>
+      </dl>
+    </div>
+    <div class="footer">
+      <p>
+        <?php print l('Edit profile', 'user/' . $profile->uid . '/edit/profile', array('query' => drupal_get_destination())); ?>
+      </p>
+      <p>
+        <?php print l('Change password or email', 'user/' . $profile->uid . '/edit', array('query' => drupal_get_destination())); ?>
+      </p>
+    </div>
+
+
+
+  </div>
+  
+  </div>

@@ -1,0 +1,59 @@
+<?php
+function my_example_menu() {
+  $items['mypage-html'] = array(
+    'title' => 'My page with HTML-style function',
+    'page callback' => 'my_example_html_page',
+    'access callback' => TRUE,
+  );
+  $items['mypage-ra'] = array(
+    'title' => 'My page with render array function',
+    'page callback' => 'my_example_ra_page',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ *
+ * Implements hook_theme 
+ *
+ */
+function my_example_theme($existing, $type, $theme, $path) {
+  return array(
+    'my_example_function' => array(
+      'variables' => array('text_one' => NULL, 'text_two' => NULL),
+    ),
+    'my_example_template' => array(
+      'variables' => array('text_one' => NULL, 'text_two' => NULL),
+      'template' => 'my_example_template',
+    ),
+  );
+}
+// Previous method (still works) of generating a page by returning HTML
+/**
+ * Callback function
+ */
+function my_example_html_page() {
+  $text_one = "This is text one";
+  return theme('my_example_function', array('text_one' => $text_one, 'text_two' => 'Text Two!'));
+}
+// New method of generating the render array and returning that
+function my_example_ra_page() {
+  $text_one = "This is text one";
+  $output =  array(
+    '#theme' => 'my_example_template',
+    '#type' => 'markup',
+    '#text_one' => $text_one,
+    '#text_two' => 'Text Two'
+  );
+  return $output;
+}
+
+/**
+ * Theme function example.
+ */
+function theme_my_example_function($variables) {
+  $output = "<h2>" . $variables['text_one'] . "</h2>";
+  $output .= "<p>" . $variables['text_two'] . "</p>";
+  return $output;
+}

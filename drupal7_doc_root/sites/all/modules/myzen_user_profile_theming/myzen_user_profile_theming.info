@@ -1,0 +1,7 @@
+; $Id$
+name = Myzen  - User profile theming
+description = This themes the user profile page
+core = 7.x
+files[] = myzen_user_profile_theming.module
+package = MYZEN
+

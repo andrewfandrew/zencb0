@@ -1,0 +1,8 @@
+; $Id$
+name = CSL - User profile form theming
+description = This themes the user profile page
+core = 7.x
+files[] = csl_user_profile_form_theming.module
+package = CSL
+
+

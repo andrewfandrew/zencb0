@@ -1,0 +1,26 @@
+<?php
+/**
+* Implementation of hook_theme().
+*
+* Register custom theme functions
+* 
+* This module is by Andrew Farquharson. I am following the technique for theming forms detailed on pp254-7 of Apress Book
+* 'Pro Drupal Development, 3rd Edition'. The book covers Drupal 7.
+* This way of theming a form is described there as the 'most flexible'. This method relies on a custom module and a custom template file
+*
+* The following hook_theme implementation basically says, ' Our module provides three theme functions and they can be called with no extra arguments.
+*/
+
+
+function myzen_user_profile_theming_theme($existing, $type, $theme, $path) {
+    return array(
+        'your_theme_key' => array(
+            'variables' => array(
+                'nid' => NULL,
+                'title' => NULL
+            ),
+            'template' => 'user_profile', // do not include .tpl.php
+            'path' => ''
+        )
+    );
+

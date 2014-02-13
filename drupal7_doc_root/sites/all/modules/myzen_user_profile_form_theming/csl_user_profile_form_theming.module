@@ -1,0 +1,41 @@
+<?php
+
+/**
+* Implements hook_theme().
+*/
+function csl_user_profile_form_theming_theme() {
+  return array(
+    // The form ID
+    'user_profile_form' => array(
+      'render element' => 'form',
+      'template' => 'user-profile-form',
+	  'path' => drupal_get_path('module', 'csl_user_profile_form_theming') . '/templates',
+    ),
+  );
+ }
+
+
+/** 
+* Assign the elements of the form to variables so
+* the themer can use those values to control how the
+* form elements are displayed, or alternatively
+* displaying the whole form as constructed above.
+*/
+
+function template_preprocess_user_profile_form(&$variables) {
+
+  $variables['csl_user_profile_form_theming'] = array();
+  $hidden = array();
+  // Provide variables named after form keys so themers can print each element independently.
+  foreach (element_children($variables['form']) as $key) {
+    $type = $variables['form'][$key]['#type'];
+	if ($type == 'hidden' || $type == 'token') {
+	  $hidden[] = drupal_render($variables['form'][$key]);
+	}
+	else {
+	  $variables['csl_user_profile_form_theming_form'] = implode($variables['csl_user_profile_form_theming']);
+	}
+   }
+   // Hidden form elements have no value to themers. No need for separation.
+   $variables['user_profile_form'] = implode($variables['csl_user_profile_form_theming']);
+   }
