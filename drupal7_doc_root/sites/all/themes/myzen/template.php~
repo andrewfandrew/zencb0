@@ -20,12 +20,12 @@
 
 // AF: the following function has been enabled in order to create a custom maintenance page for the site
 // There are in fact two maintenance pages generate by two different maintenance templates
-// which are found in the myzen subdirectory. One for when the site is placed in maintenance mode, the other
+// which are found in the zencb0 subdirectory. One for when the site is placed in maintenance mode, the other
 // when the database is unavailable.
 
 
 
-function myzen_preprocess_maintenance_page(&$variables, $hook) {
+function zencb0_preprocess_maintenance_page(&$variables, $hook) {
   // When a variable is manipulated or added in preprocess_html or
   // preprocess_page, that same work is probably needed for the maintenance page
   // as well, so we can just re-use those functions to do that work here.
@@ -34,8 +34,8 @@ function myzen_preprocess_maintenance_page(&$variables, $hook) {
   // I am in fact defining the variables using an alternative method, within the template files themselves
   // rather than inside this file.
   
-   myzen_preprocess_html($variables, $hook);
-   myzen_preprocess_page($variables, $hook);
+   zencb0_preprocess_html($variables, $hook);
+   zencb0_preprocess_page($variables, $hook);
   
 /** AF: Enable a stylesheet which will override the system or parent theme version
  * This is so I can style the maintenance pages the way i want
@@ -43,7 +43,7 @@ function myzen_preprocess_maintenance_page(&$variables, $hook) {
  * so it needs to be hacked as required
  */
 
-drupal_add_css(drupal_get_path('theme', 'myzen') . '/css/maintenance-page.css');
+drupal_add_css(drupal_get_path('theme', 'zencb0') . '/css/maintenance-page.css');
 }
 // 
 
@@ -56,7 +56,7 @@ drupal_add_css(drupal_get_path('theme', 'myzen') . '/css/maintenance-page.css');
  *   The name of the template being rendered ("html" in this case.)
  */
 
-function myzen_preprocess_html(&$variables, $hook) {
+function zencb0_preprocess_html(&$variables, $hook) {
  // $variables['sample_variable'] = t('Lorem ipsum.');
 
   // The body tag's classes are controlled by the $classes_array variable. To
@@ -74,7 +74,7 @@ function myzen_preprocess_html(&$variables, $hook) {
  *   The name of the template being rendered ("page" in this case.)
  */
 
-function myzen_preprocess_page(&$variables, $hook) {
+function zencb0_preprocess_page(&$variables, $hook) {
  // $variables['sample_variable'] = t('Lorem ipsum.');
 }
 // */
@@ -88,11 +88,11 @@ function myzen_preprocess_page(&$variables, $hook) {
  *   The name of the template being rendered ("node" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function myzen_preprocess_node(&$variables, $hook) {
+function zencb0_preprocess_node(&$variables, $hook) {
   $variables['sample_variable'] = t('Lorem ipsum.');
 // */
   // Optionally, run node-type-specific preprocess functions, like
-  // myzen_preprocess_node_page() or myzen_preprocess_node_story().
+  // zencb0_preprocess_node_page() or zencb0_preprocess_node_story().
 /* -- Delete this line if you want to use this function  
   function = __FUNCTION__ . '_' . $variables['node']->type;
   if (function_exists(function)) {
@@ -110,7 +110,7 @@ function myzen_preprocess_node(&$variables, $hook) {
  *   The name of the template being rendered ("comment" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function myzen_preprocess_comment(&$variables, $hook) {
+function zencb0_preprocess_comment(&$variables, $hook) {
   $variables['sample_variable'] = t('Lorem ipsum.');
 }
 // */
@@ -124,7 +124,7 @@ function myzen_preprocess_comment(&$variables, $hook) {
  *   The name of the template being rendered ("region" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function myzen_preprocess_region(&$variables, $hook) {
+function zencb0_preprocess_region(&$variables, $hook) {
   // Don't use Zen's region--sidebar.tpl.php template for sidebars.
   //if (strpos($variables['region'], 'sidebar_') === 0) {
   //  $variables['theme_hook_suggestions'] = array_diff($variables['theme_hook_suggestions'], array('region__sidebar'));
@@ -141,7 +141,7 @@ function myzen_preprocess_region(&$variables, $hook) {
  *   The name of the template being rendered ("block" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function myzen_preprocess_block(&$variables, $hook) {
+function zencb0_preprocess_block(&$variables, $hook) {
   // Add a count to all the blocks in the region.
   // $variables['classes_array'][] = 'count-' . $variables['block_id'];
 
